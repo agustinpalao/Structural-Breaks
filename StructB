@@ -1,0 +1,35 @@
+
+
+Date<-seq(as.Date("1990/1/1"), by = "month", length.out = 312)
+Date<-as.data.frame(Date, row.names = NULL, optional = FALSE)
+Date$YearMonth<-format(as.Date(Date$Date), "%Y-%m")
+
+
+
+Total_ELN_HRV<-aggregate(ELN_VE_HRV$DV_VE_HRV, by=list(ELN_VE_HRV$YearMonth), FUN = sum)
+colnames(Total_ELN_HRV)<-c("YearMonth", "ELN_HRV")
+Total_ELN_HRV<-merge(Date, Total_ELN_HRV, by="YearMonth", all.x= TRUE)
+Total_ELN_HRV$Date<-NULL
+Total_ELN_HRV$ELN_HRV[is.na(Total_ELN_HRV$ELN_HRV)]<-0
+
+Total_ELN_AB<-aggregate(ELN_VE_AB$DV_VE_AB, by=list(ELN_VE_AB$YearMonth), FUN = sum)
+colnames(Total_ELN_AB)<-c("YearMonth", "ELN_AB")
+Total_ELN_AB<-merge(Date, Total_ELN_AB, by="YearMonth", all.x= TRUE)
+Total_ELN_AB$Date<-NULL
+Total_ELN_AB$ELN_AB[is.na(Total_ELN_AB$ELN_AB)]<-0
+
+Total_FARC_HRV<-aggregate(FARC_VE_HRV$DV_VE_HRV, by=list(FARC_VE_HRV$YearMonth), FUN = sum)
+colnames(Total_FARC_HRV)<-c("YearMonth", "FARC_HRV")
+Total_FARC_HRV<-merge(Date, Total_FARC_HRV, by="YearMonth", all.x= TRUE)
+Total_FARC_HRV$Date<-NULL
+Total_FARC_HRV$FARC_HRV[is.na(Total_FARC_HRV$FARC_HRV)]<-0
+
+Total_FARC_AB<-aggregate(FARC_VE_AB$DV_VE_AB, by=list(FARC_VE_AB$YearMonth), FUN = sum)
+colnames(Total_FARC_AB)<-c("YearMonth", "FARC_AB")
+Total_FARC_AB<-merge(Date, Total_FARC_AB, by="YearMonth", all.x= TRUE)
+Total_FARC_AB$Date<-NULL
+Total_FARC_AB$FARC_AB[is.na(Total_FARC_AB$FARC_AB)]<-0
+
+rm(CINEP, CINEP_ELN, CINEP_ELN_AB, CINEP_ELN_HRV, CINEP_FARC, CINEP_FARC_AB,
+   CINEP_FARC_HRV, ELN_VE_AB, ELN_VE_HRV, FARC_VE_AB, FARC_VE_HRV,Date)
+
