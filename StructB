@@ -1,35 +1,53 @@
 
 
-Date<-seq(as.Date("1990/1/1"), by = "month", length.out = 312)
-Date<-as.data.frame(Date, row.names = NULL, optional = FALSE)
-Date$YearMonth<-format(as.Date(Date$Date), "%Y-%m")
+### (9) Structural changes ####
+
+# Create a Time Series Towers, ELN and FARC HRV
+library(xts)
+library(tseries)
+ELN_HRV <- ts(Total_ELN_HRV_AR$ELN_HRV, start=c(1990,1), end=c(2015,12), frequency=12)
+plot(ELN_HRV,xaxt="n" ,main="ELN Human Rights Violations in ARAUCA", xlab="Year", ylab="")
+axis(1, at=seq(1990,2015, by=1),las=2)
+# Run the structural change analysis
+library(strucchange)
+#bp_ts <- breakpoints(ELN_HRV ~ 1, h=0.25, breaks=2)
+
+bp_ts <- breakpoints(ELN_HRV ~ 1)
+summary(bp_ts)
+
+#ci_ts<-confint(bp_ts, breaks = 1)
+ci_ts<-confint(bp_ts)
+lines(bp_ts)
+lines(ci_ts)
+legend("topright", c("Breakpoints","Confidence Interval"), # puts text in the legend
+       lty=c(2,1), # gives the legend appropriate symbols (lines)
+       lwd=c(2.5,2.5),col=c("black","red")) # gives the legend lines the correct color and width
+
+res<-residuals(bp_ts)
+acf(res)
+pacf(res)
+
+fs.ELN_HRV <- Fstats(ELN_HRV ~ 1)
+plot(fs.ELN_HRV)
+sctest(fs.ELN_HRV)
+lines(breakpoints(fs.ELN_HRV))
 
 
+FARC_HRV <- ts(Total_FARC_HRV_CA$FARC_HRV, start=c(1990,1), end=c(2015,12), frequency=12)
+plot(FARC_HRV,xaxt="n" ,main="FARC Human Rights Violations in Cauca", xlab="Year", ylab="")
+axis(1, at=seq(1990,2015, by=1),las=2)
 
-Total_ELN_HRV<-aggregate(ELN_VE_HRV$DV_VE_HRV, by=list(ELN_VE_HRV$YearMonth), FUN = sum)
-colnames(Total_ELN_HRV)<-c("YearMonth", "ELN_HRV")
-Total_ELN_HRV<-merge(Date, Total_ELN_HRV, by="YearMonth", all.x= TRUE)
-Total_ELN_HRV$Date<-NULL
-Total_ELN_HRV$ELN_HRV[is.na(Total_ELN_HRV$ELN_HRV)]<-0
 
-Total_ELN_AB<-aggregate(ELN_VE_AB$DV_VE_AB, by=list(ELN_VE_AB$YearMonth), FUN = sum)
-colnames(Total_ELN_AB)<-c("YearMonth", "ELN_AB")
-Total_ELN_AB<-merge(Date, Total_ELN_AB, by="YearMonth", all.x= TRUE)
-Total_ELN_AB$Date<-NULL
-Total_ELN_AB$ELN_AB[is.na(Total_ELN_AB$ELN_AB)]<-0
+bp_ts <- breakpoints(FARC_HRV ~ 1)
+summary(bp_ts)
+ci_ts<-confint(bp_ts)
+lines(bp_ts)
+lines(ci_ts)
+legend("topright", c("Breakpoints","Confidence Interval"), # puts text in the legend
+       lty=c(2,1), # gives the legend appropriate symbols (lines)
+       lwd=c(2.5,2.5),col=c("black","red")) # gives the legend lines the correct color and width
 
-Total_FARC_HRV<-aggregate(FARC_VE_HRV$DV_VE_HRV, by=list(FARC_VE_HRV$YearMonth), FUN = sum)
-colnames(Total_FARC_HRV)<-c("YearMonth", "FARC_HRV")
-Total_FARC_HRV<-merge(Date, Total_FARC_HRV, by="YearMonth", all.x= TRUE)
-Total_FARC_HRV$Date<-NULL
-Total_FARC_HRV$FARC_HRV[is.na(Total_FARC_HRV$FARC_HRV)]<-0
-
-Total_FARC_AB<-aggregate(FARC_VE_AB$DV_VE_AB, by=list(FARC_VE_AB$YearMonth), FUN = sum)
-colnames(Total_FARC_AB)<-c("YearMonth", "FARC_AB")
-Total_FARC_AB<-merge(Date, Total_FARC_AB, by="YearMonth", all.x= TRUE)
-Total_FARC_AB$Date<-NULL
-Total_FARC_AB$FARC_AB[is.na(Total_FARC_AB$FARC_AB)]<-0
-
-rm(CINEP, CINEP_ELN, CINEP_ELN_AB, CINEP_ELN_HRV, CINEP_FARC, CINEP_FARC_AB,
-   CINEP_FARC_HRV, ELN_VE_AB, ELN_VE_HRV, FARC_VE_AB, FARC_VE_HRV,Date)
-
+fs.FARC_HRV <- Fstats(FARC_HRV ~ 1)
+plot(fs.FARC_HRV)
+lines(breakpoints(fs.FARC_HRV))
+sctest(fs.FARC_HRV)
