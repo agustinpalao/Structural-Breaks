@@ -1,4 +1,5 @@
-
+Total_ELN_HRV_AR<-read.csv(TS_ELN_HRV_AR)
+Total_FARC_HRV_CA<-read.csv(TS_FARC_HRV_CA)
 
 ### (9) Structural changes ####
 
